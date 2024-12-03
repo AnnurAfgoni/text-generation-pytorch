@@ -2,6 +2,9 @@ import torch
 import torch.nn as nn
 import lightning as L
 
+from omegaconf import DictConfig
+from hydra.utils import instantiate
+
 
 class CharRNN(nn.Module):
     def __init__(self, tokens, n_hidden=256, n_layers=2, drop_prob=0.5):
@@ -33,11 +36,18 @@ class CharRNN(nn.Module):
 
 
 class CharRNNModule(L.LightningModule):
-    def __init__(self, model, lr=0.001):
+    def __init__(
+        self, 
+        model: DictConfig, 
+        loss_fn: DictConfig,
+        optimizer: DictConfig,
+    ):
         super().__init__()
-        self.model = model
-        self.lr = lr
-        self.criterion = nn.CrossEntropyLoss()
+        self.save_hyperparameters()
+        
+        self.model = instantiate(model)
+        self.loss_fn = instantiate(loss_fn)
+        self.optimizer = optimizer
 
     def forward(self, x, hidden):
         return self.model(x, hidden)
@@ -53,7 +63,7 @@ class CharRNNModule(L.LightningModule):
         y = y.view(-1, self.model.fc.out_features)
 
         # Compute loss
-        loss = self.criterion(y_hat, y)
+        loss = self.loss_fn(y_hat, y)
 
         # Log training loss
         self.log("train_loss", loss, prog_bar=True)
@@ -70,12 +80,16 @@ class CharRNNModule(L.LightningModule):
         y = y.view(-1, self.model.fc.out_features)
 
         # Compute loss
-        val_loss = self.criterion(y_hat, y)
+        val_loss = self.loss_fn(y_hat, y)
 
         # Log validation loss
         self.log("val_loss", val_loss, prog_bar=True)
         return val_loss
 
     def configure_optimizers(self):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.lr)
+        optimizer = instantiate(
+            self.optimizer, 
+            params=self.parameters(), 
+            _convert_="partial"
+        )
         return optimizer
