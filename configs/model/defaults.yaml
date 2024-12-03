@@ -1,0 +1,17 @@
+model:
+  _target_: char_rnn.model.CharRNN
+  tokens: ${data.tokens}
+
+module:
+  _target_: char_rnn.model.CharRNNModule
+  model: ${model.model}
+  loss_fn: ${model.loss}
+  optimizer: ${model.optimizer}
+
+loss:
+  _target_: torch.nn.CrossEntropyLoss
+
+optimizer:
+  _target_: torch.optim.Adam
+  lr: 1e-3
+  weight_decay: 0.0005

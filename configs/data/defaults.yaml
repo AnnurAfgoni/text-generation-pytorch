@@ -1,0 +1,9 @@
+datamodule:
+  _target_: char_rnn.data.TextDataModule
+  text_path: data/anna.txt
+  seq_length: 50
+  batch_size: 32
+
+tokens:
+  _target_: char_rnn.utils.get_tokens
+  text: data/anna.txt

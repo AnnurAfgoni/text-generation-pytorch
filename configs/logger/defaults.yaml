@@ -1,0 +1,10 @@
+mlflow_logger:
+  _target_: lightning.pytorch.loggers.mlflow.MLFlowLogger
+  tracking_uri: logs/mlflow/
+  experiment_name: rnn
+  log_model: true
+
+tensorboard_logger:
+  _target_: lightning.pytorch.loggers.tensorboard.TensorBoardLogger
+  save_dir: logs/tensorboard/
+  name: rnn
