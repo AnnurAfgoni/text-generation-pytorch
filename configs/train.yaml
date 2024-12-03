@@ -1,0 +1,10 @@
+defaults:
+  - _self_
+  - callbacks: defaults
+  - data: defaults
+  - hydra: defaults
+  - logger: defaults
+  - model: defaults
+  - trainer: defaults
+
+task_name: "train"

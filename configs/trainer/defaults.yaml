@@ -1,0 +1,4 @@
+_target_: lightning.Trainer
+max_epochs: 10
+accelerator: cuda
+gradient_clip_val: 5.0

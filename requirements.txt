@@ -1,5 +1,8 @@
 numpy
 torch
 lightning
-
+hydra-core
+mlflow
+tensorboard
 ipykernel
+gdown
